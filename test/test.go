@@ -1,11 +1,23 @@
-package test
+package main
 
 import (
+	"crypto/tls"
 	"fmt"
-	"testing"
+	"io/ioutil"
+	"net/http"
 )
 
-func TestJiangyong(t *testing.T) {
-	fmt.Printf("%d\n", 1)
-
+func main() {
+	tr := &http.Transport{
+		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+	}
+	client := &http.Client{Transport: tr}
+	resp, err := client.Get("https://localhost:443")
+	if err != nil {
+		fmt.Println("error:", err)
+		return
+	}
+	defer resp.Body.Close()
+	body, err := ioutil.ReadAll(resp.Body)
+	fmt.Println(string(body))
 }
